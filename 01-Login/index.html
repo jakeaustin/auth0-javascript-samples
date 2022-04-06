@@ -7,20 +7,6 @@
     window.mParticle = {
         config: {
             isDevelopmentMode: true,
-            identifyRequest: {
-                userIdentities: {
-                    email: 'email@example.com',
-                    customerid: '123456',
-                },
-            },
-            identityCallback: function(result) {
-              console.log('mp identity result: ' + result);
-              if(result.getUser()) {
-                console.log('identified in mP')
-              } else {
-                console.log('mP IDSync failed')
-              }
-            },
         },
     };
 

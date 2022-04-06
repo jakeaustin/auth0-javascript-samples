@@ -1,3 +1,12 @@
+// mP identity Callback
+const identityCallback = function(result) {
+  console.log('mp identity result: ' + result);
+  if(result.getUser()) {
+    console.log('identified in mP')
+  } else {
+    console.log('mP IDSync failed')
+  }
+};
 // The Auth0 client, initialized in configureClient()
 let auth0 = null;
 
@@ -31,6 +40,7 @@ const logout = () => {
     auth0.logout({
       returnTo: window.location.origin
     });
+    mParticle.Identity.logout({}, identityCallback);
   } catch (err) {
     console.log("Log out failed", err);
   }
@@ -120,20 +130,22 @@ window.onload = async () => {
 
       // mP post-login handler
       const user = await auth0.getUser()
+      
+      debugger;
+      var identityRequest = {}
+
+      // check auth0 user for email
       if(user.email && user.email_verified) {
-        var identityRequest = {
-          userIdentities: {
-            email: user.email,
-          }
-        }
-        var identityCallback = function(result) {
-              console.log('mp identity result: ' + result);
-              if(result.getUser()) {
-                console.log('identified in mP')
-              } else {
-                console.log('mP IDSync failed')
-              }
-            }
+        identityRequest.userIdentities.email = user.email
+      }
+
+      // check auth0 user for x identifier
+      // if(user.x) {
+      //   identityRequest.userIdentities.y = user.x
+      // }
+
+      //if one or more identities have been logged, invoke mP identify call
+      if (identityRequest.userIdentities) {
         mParticle.Identity.login(identityRequest, identityCallback)
       }
 
