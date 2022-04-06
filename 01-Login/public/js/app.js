@@ -117,6 +117,26 @@ window.onload = async () => {
       }
 
       console.log("Logged in!");
+
+      // mP post-login handler
+      const user = await auth0.getUser()
+      if(user.email && user.email_verified) {
+        var identityRequest = {
+          userIdentities: {
+            email: user.email,
+          }
+        }
+        var identityCallback = function(result) {
+              console.log('mp identity result: ' + result);
+              if(result.getUser()) {
+                console.log('identified in mP')
+              } else {
+                console.log('mP IDSync failed')
+              }
+            }
+        mParticle.Identity.login(identityRequest, identityCallback)
+      }
+
     } catch (err) {
       console.log("Error parsing redirect:", err);
     }
